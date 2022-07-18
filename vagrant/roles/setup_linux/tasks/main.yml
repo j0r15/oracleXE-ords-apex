@@ -6,7 +6,7 @@
     name: "{{ packages }}"
   vars:
     packages:
-    - python-pip
+    - python3-pip
     - expect
     - libaio
 
@@ -16,17 +16,18 @@
     name: "*"
     state: latest
 
- 
+
 #pip install --upgrade pip
 - name: upgrade pip
-  pip:
-    name: pip
-    extra_args: --upgrade pip
+  shell: pip3 install --upgrade pip
+#   pip:
+#     name: pip
+#     extra_args: --upgrade pip
 
 # Update /etc/hosts
 - name: set /etc/hosts remove 127.0.0.1 for hostname
-  lineinfile: 
-    path: /etc/hosts 
+  lineinfile:
+    path: /etc/hosts
     regexp: '^127\.0\.0\.1.*{{ ansible_hostname }}'
     state: absent
 

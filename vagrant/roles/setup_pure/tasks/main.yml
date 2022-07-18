@@ -1,5 +1,5 @@
 ---
 
 # Install (Pure Storage SDK) python package.
-- pip:
-    name: purestorage
+- name: install purestorage
+  shell: pip3 install purestorage

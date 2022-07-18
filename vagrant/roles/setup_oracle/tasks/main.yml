@@ -1,52 +1,54 @@
 ---
 
-# Install Oracle 18c preinstall package
-- name: install 18c preinstall package
+# Install Oracle 21c preinstall package
+- name: install 21c preinstall package
   yum:
-    name: "oracle-database-preinstall-18c"
+    name: "oracle-database-preinstall-21c"
 
-# Install Oracle 18 XE package
-- name: install Oracle 18xe package
-  yum:
-    name: "oracle-database-xe-18c-1.0-1.x86_64.rpm"
+# # Download Oracle 21 XE package
+- name: Download Oracle 21 XE package
+  shell: "wget https://download.oracle.com/otn-pub/otn_software/db-express/oracle-database-xe-21c-1.0-1.ol7.x86_64.rpm"
+
+# Install Oracle 21 XE package
+- name: Install Oracle 21xe package
+  shell: "yum -y localinstall oracle-database-xe-21c-1.0-1.ol7.x86_64.rpm"
+
 
 # Install cx_Oracle python package.
 - name: install cx_Oracle python package
-  pip:
-    name: cx_Oracle
+  shell: pip3 install cx_Oracle
 
 # Install the pexpect python package.
 - name: install pexpect python packge
-  pip:
-    name: pexpect
-# 
-# Setup
-- name: Copy Oracle 18c-xe template 
-  template: src=templates/oracle-xe-18c_configure.tcl.j2 dest=/root/oracle-xe-18c_configure.tcl mode=0755
+  shell: pip3 install pexpect
 
-# Configure Oracle 18c-xe
-- name: Configure Oracle 18c-xe
-  shell: /root/oracle-xe-18c_configure.tcl
+# Setup
+- name: Copy Oracle 21c-xe template
+  template: src=templates/oracle-xe-21c_configure.tcl.j2 dest=/root/oracle-xe-21c_configure.tcl mode=0755
+
+# Configure Oracle 21c-xe
+- name: Configure Oracle 21c-xe
+  shell: /root/oracle-xe-21c_configure.tcl
   args:
-    creates: /root/oracle-xe-18c_configure.log
+    creates: /root/oracle-xe-21c_configure.log
 
 # Update /etc/oratab
 - lineinfile:
     path: /etc/oratab
-    regexp: '^XE:/u01/oracle/product/18c/dbhomeXE:N'
-    line: 'XE:/u01/oracle/product/18c/dbhomeXE:Y'
+    regexp: '^XE:/u01/oracle/product/21c/dbhomeXE:N'
+    line: 'XE:/u01/oracle/product/21c/dbhomeXE:Y'
 
 # Enable service
-- name: oracle-xe-18c enable
-  shell: systemctl enable oracle-xe-18c
+- name: oracle-xe-21c enable
+  shell: systemctl enable oracle-xe-21c
 
 # Start service
-- name: oracle-xe-18c start
-  shell: systemctl start oracle-xe-18c
+- name: oracle-xe-21c start
+  shell: systemctl start oracle-xe-21c
 
 # Update TNSNames.ora
 - name: Update tnsnames.ora
-  lineinfile: 
+  lineinfile:
     path: /opt/oracle/product/18c/dbhomeXE/network/admin/tnsnames.ora
     state: present
     line: "{{ item }}"
